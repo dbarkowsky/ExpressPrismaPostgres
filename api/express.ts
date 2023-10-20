@@ -8,8 +8,8 @@ import rateLimit from 'express-rate-limit';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import constants from './constants';
-import router from './routes';
 import headerHandler from './middleware/headerHandler';
+import router from './routes';
 
 const app: express.Application = express();
 
@@ -68,6 +68,6 @@ if (!TESTING) app.use(limiter);
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerJSDoc(OPENAPI_OPTIONS)));
 
 // Add router
-// app.use("/api", router);
+app.use('/api', router.healthRouter);
 
 export default app;
