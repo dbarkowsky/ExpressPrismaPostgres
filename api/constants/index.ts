@@ -1,5 +1,5 @@
-import networking from "./networking";
-import switches from "./switches";
+import networking from './networking';
+import switches from './switches';
 
 const constants = {
   ...networking,
