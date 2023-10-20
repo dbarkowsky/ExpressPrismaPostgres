@@ -1,15 +1,15 @@
-import "dotenv/config.js";
-import express, { NextFunction, RequestHandler, Response } from "express";
-import cookieParser from "cookie-parser";
-import compression from "compression";
-import morgan from "morgan";
-import cors from "cors";
-import rateLimit from "express-rate-limit";
-import swaggerJSDoc from "swagger-jsdoc";
-import swaggerUi from "swagger-ui-express";
-import constants from "./constants";
-import router from "./routes";
-import headerHandler from "./middleware/headerHandler";
+import 'dotenv/config.js';
+import express, { RequestHandler } from 'express';
+import cookieParser from 'cookie-parser';
+import compression from 'compression';
+import morgan from 'morgan';
+import cors from 'cors';
+import rateLimit from 'express-rate-limit';
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
+import constants from './constants';
+import router from './routes';
+import headerHandler from './middleware/headerHandler';
 
 const app: express.Application = express();
 
@@ -19,15 +19,15 @@ const { TESTING, BACKEND_URL, FRONTEND_URL } = constants;
 const swaggerURL = `${BACKEND_URL}/api`;
 const OPENAPI_OPTIONS = {
   definition: {
-    openapi: "3.0.0",
+    openapi: '3.0.0',
     info: {
-      title: "ExpressPrismaPostgres Test",
-      version: "1.0.0",
-      description: "",
+      title: 'ExpressPrismaPostgres Test',
+      version: '1.0.0',
+      description: '',
     },
     servers: [{ url: swaggerURL }],
   },
-  apis: ["./docs/*.yaml"],
+  apis: ['./docs/*.yaml'],
 };
 
 // Express Rate Limiter Configuration
@@ -42,7 +42,7 @@ const limiter = rateLimit({
 // Localhost does not need to be specified.
 const corsOptions = {
   origin: [
-    "http://localhost:8080", // Local frontend testing
+    'http://localhost:8080', // Local frontend testing
     FRONTEND_URL, // Frontend
   ],
   credentials: true,
@@ -56,20 +56,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(compression());
-app.use(morgan("dev")); // logging middleware
+app.use(morgan('dev')); // logging middleware
 
 // Set headers for response
-app.use("/api", headerHandler as RequestHandler);
+app.use('/api', headerHandler as RequestHandler);
 
 // Use rate limiter if not testing
 if (!TESTING) app.use(limiter);
 
 // Swagger service route
-app.use(
-  "/api/docs",
-  swaggerUi.serve,
-  swaggerUi.setup(swaggerJSDoc(OPENAPI_OPTIONS))
-);
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerJSDoc(OPENAPI_OPTIONS)));
 
 // Add router
 // app.use("/api", router);
