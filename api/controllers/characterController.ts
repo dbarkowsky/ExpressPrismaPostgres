@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
+import { ISeries } from '../prisma/seedData/series';
 
 const prisma = new PrismaClient();
 
@@ -54,10 +55,10 @@ export const getAllCharacters = async (req: Request, res: Response) => {
         company: series.series.company,
       })),
     }));
-    res.status(200).json(refinedCharacters);
+    return res.status(200).json(refinedCharacters);
   } catch (e: any) {
     console.error(e);
-    res.status(404).send('No characters found.');
+    return res.status(404).send('No characters found.');
   }
 };
 
@@ -75,9 +76,10 @@ export const getCharacter = async (req: Request, res: Response) => {
         series: true,
       },
     });
-    res.status(200).json(character);
-  } catch {
-    res.status(404).send('Character not found.');
+    return res.status(200).json(character);
+  } catch (e: any) {
+    console.error(e);
+    return res.status(404).send('Character not found.');
   }
 };
 
@@ -94,12 +96,108 @@ export const updateCharacter = async (req: Request, res: Response) => {
         cityId,
       },
     });
-    res.status(200).json(character);
-  } catch {
-    res.status(404).send('Character not found.');
+    return res.status(200).json(character);
+  } catch (e: any) {
+    console.error(e);
+    return res.status(404).send('Character not found.');
   }
 };
 
-// export const addCharacter = async (req: Request, res: Response) => {
-//   const {name, } = req.body;
-// }
+export const deleteCharacter = async (req: Request, res: Response) => {
+  const { name } = req.query;
+  if (!name) return res.status(400).send('No character name given.');
+  try {
+    // Delete relations
+    await prisma.seriesCharacter.deleteMany({
+      where: { character: { name: name as string } },
+    });
+    // Delete character
+    await prisma.character.delete({
+      where: { name: name as string },
+    });
+    return res.status(204).send();
+  } catch (e: any) {
+    console.error(e);
+    return res.status(404).send('Character not found.');
+  }
+};
+
+export const addCharacter = async (req: Request, res: Response) => {
+  const { name, height, series, cityId } = req.body;
+  if (!name || !height) {
+    return res.status(400).send('name or height are missing from body, but they are required');
+  }
+
+  // Can use generated types to pre-make data
+  let characterData: Prisma.CharacterCreateInput = {
+    name,
+    height,
+  };
+
+  // Add city if specified
+  if (cityId !== undefined) {
+    // Find a matching city
+    try {
+      const matchingCity = await prisma.city.findUnique({ where: { id: cityId } });
+
+      const cityConnection: Prisma.CityWhereUniqueInput = {
+        name_latitude_longitude: {
+          name: matchingCity.name,
+          latitude: matchingCity.latitude,
+          longitude: matchingCity.longitude,
+        },
+      };
+      characterData = { ...characterData, city: cityId ? { connect: cityConnection } : {} };
+    } catch {
+      console.warn('City not found database');
+    }
+  }
+
+  try {
+    // Add character
+    const character = await prisma.character.create({
+      data: characterData,
+    });
+
+    if (series) {
+      // Connect series entries
+      const seriesList = [];
+      series.forEach(async (series: ISeries) => {
+        try {
+          const newSeries = await prisma.seriesCharacter.upsert({
+            where: {
+              seriesName_seriesFirstIssue_characterKey: {
+                seriesName: series.name,
+                seriesFirstIssue: new Date(series.firstIssue),
+                characterKey: character.id,
+              },
+            },
+            create: {
+              characterKey: character.id,
+              seriesName: series.name,
+              seriesFirstIssue: new Date(series.firstIssue),
+            },
+            update: {
+              characterKey: character.id,
+              seriesName: series.name,
+              seriesFirstIssue: new Date(series.firstIssue),
+            },
+          });
+          seriesList.push(newSeries);
+        } catch (e) {
+          console.warn('Series could not be added.');
+          console.warn(e);
+        }
+      });
+
+      // character = { ...character, series: seriesList };
+    }
+
+    return res.status(201).json(character);
+  } catch (e: any) {
+    console.error((e as Prisma.PrismaClientKnownRequestError).message);
+    return res
+      .status(400)
+      .send(`Character could not be added: ${(e as Prisma.PrismaClientKnownRequestError).message}`);
+  }
+};

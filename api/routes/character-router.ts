@@ -5,6 +5,11 @@ const router = express.Router();
 
 // Character endpoints
 router.route('/characters').get(controllers.getAllCharacters);
-router.route('/character').get(controllers.getCharacter).patch(controllers.updateCharacter);
+router
+  .route('/character')
+  .get(controllers.getCharacter)
+  .patch(controllers.updateCharacter)
+  .post(controllers.addCharacter)
+  .delete(controllers.deleteCharacter);
 
 export default router;
