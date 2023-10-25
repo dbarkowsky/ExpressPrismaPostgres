@@ -11,33 +11,43 @@ datasource db {
 }
 
 model Character {
-  id     Int    @id @default(autoincrement())
-  name   String @unique
+  id     Int               @id @default(autoincrement())
+  name   String            @unique
   height Int
-  series Series @relation(fields: [seriesName, seriesFirstIssue], references: [name, firstIssue])
-  city   City   @relation(fields: [cityId], references: [id])
+  series SeriesCharacter[]
+  city   City              @relation(fields: [cityId], references: [id])
 
-  seriesName       String
-  seriesFirstIssue DateTime
-  cityId           Int
+  cityId Int
 }
 
 model City {
   id        Int         @id @default(autoincrement())
-  name      String      @unique
+  name      String
   latitude  Decimal
   longitude Decimal
   Character Character[]
+
+  @@unique([name, latitude, longitude])
 }
 
 model Series {
   name        String
   firstIssue  DateTime
-  characters  Character[]
-  company     Company     @relation(fields: [companyName], references: [name])
+  characters  SeriesCharacter[]
+  company     Company           @relation(fields: [companyName], references: [name])
   companyName String
 
   @@id([name, firstIssue])
+}
+
+model SeriesCharacter {
+  series           Series    @relation(fields: [seriesName, seriesFirstIssue], references: [name, firstIssue])
+  seriesName       String
+  seriesFirstIssue DateTime
+  character        Character @relation(fields: [characterKey], references: [id])
+  characterKey     Int
+
+  @@id([seriesName, seriesFirstIssue])
 }
 
 model Company {
