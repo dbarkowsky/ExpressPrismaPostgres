@@ -1,0 +1,10 @@
+import controllers from '../controllers';
+import express from 'express';
+
+const router = express.Router();
+
+// Character endpoints
+router.route('/characters').get(controllers.getAllCharacters);
+router.route('/character').get(controllers.getCharacter);
+
+export default router;
