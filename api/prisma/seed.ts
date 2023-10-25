@@ -114,9 +114,10 @@ async function main() {
     character.series.forEach(async (series) => {
       await prisma.seriesCharacter.upsert({
         where: {
-          seriesName_seriesFirstIssue: {
+          seriesName_seriesFirstIssue_characterKey: {
             seriesName: series.name,
             seriesFirstIssue: series.firstIssue,
+            characterKey: newCharacter.id,
           },
         },
         create: {

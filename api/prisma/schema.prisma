@@ -47,7 +47,7 @@ model SeriesCharacter {
   character        Character @relation(fields: [characterKey], references: [id])
   characterKey     Int
 
-  @@id([seriesName, seriesFirstIssue])
+  @@id([seriesName, seriesFirstIssue, characterKey])
 }
 
 model Company {
