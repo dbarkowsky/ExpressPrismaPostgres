@@ -15,9 +15,9 @@ model Character {
   name   String            @unique
   height Int
   series SeriesCharacter[]
-  city   City              @relation(fields: [cityId], references: [id])
+  city   City?             @relation(fields: [cityId], references: [id])
 
-  cityId Int
+  cityId Int?
 }
 
 model City {
