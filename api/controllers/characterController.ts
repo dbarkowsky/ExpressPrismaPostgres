@@ -81,13 +81,25 @@ export const getCharacter = async (req: Request, res: Response) => {
   }
 };
 
-// export const updateCharacter = async (req: Request, res: Response) => {
-//   const { id } = req.query;
-//   if (!id) return res.status(400).send('No character ID given.');
-//   try {
-//     const character = await prisma.character.update({ where: { id: id } });
-//     res.status(200).json(character);
-//   } catch {
-//     res.status(404).send('Character not found.');
-//   }
-// };
+export const updateCharacter = async (req: Request, res: Response) => {
+  const { name } = req.query;
+  const { cityId, height } = req.body;
+  if (!name) return res.status(400).send('No character name given.');
+  try {
+    const character = await prisma.character.update({
+      where: { name: name as string },
+      // only updates height and cityId, and only updates a column if defined!
+      data: {
+        height,
+        cityId,
+      },
+    });
+    res.status(200).json(character);
+  } catch {
+    res.status(404).send('Character not found.');
+  }
+};
+
+// export const addCharacter = async (req: Request, res: Response) => {
+//   const {name, } = req.body;
+// }
