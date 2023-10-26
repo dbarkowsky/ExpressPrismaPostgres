@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { Prisma, PrismaClient } from '@prisma/client';
-import { ISeries } from '../prisma/seedData/series';
 
 const prisma = new PrismaClient();
 
@@ -128,70 +127,79 @@ export const addCharacter = async (req: Request, res: Response) => {
     return res.status(400).send('name or height are missing from body, but they are required');
   }
 
-  // Can use generated types to pre-make data
-  let characterData: Prisma.CharacterCreateInput = {
-    name,
-    height,
-  };
-
   // Add city if specified
   if (cityId !== undefined) {
     // Find a matching city
     try {
-      const matchingCity = await prisma.city.findUnique({ where: { id: cityId } });
-
-      const cityConnection: Prisma.CityWhereUniqueInput = {
-        name_latitude_longitude: {
-          name: matchingCity.name,
-          latitude: matchingCity.latitude,
-          longitude: matchingCity.longitude,
-        },
-      };
-      characterData = { ...characterData, city: cityId ? { connect: cityConnection } : {} };
+      await prisma.city.findUnique({ where: { id: cityId } });
     } catch {
       console.warn('City not found database');
+      return res.status(404).send('City ID not found.');
+    }
+  }
+
+  interface ISeriesIncoming {
+    seriesName: string;
+    seriesFirstIssue: Date;
+    companyName?: string;
+  }
+
+  // TODO: Validate that series exists and if it matches expected interface
+  let refinedSeries: ISeriesIncoming[] = [];
+
+  if (series) {
+    // Add each series to the database
+    try {
+      series.forEach(async (series: ISeriesIncoming) => {
+        await prisma.series.upsert({
+          where: {
+            name_firstIssue: {
+              name: series.seriesName,
+              firstIssue: new Date(series.seriesFirstIssue),
+            },
+          },
+          create: {
+            name: series.seriesName,
+            firstIssue: new Date(series.seriesFirstIssue),
+            company: {
+              connect: {
+                name: series.companyName,
+              },
+            },
+          },
+          update: {}, // Don't update if info is different
+        });
+      });
+      refinedSeries = series.map((series: ISeriesIncoming) => ({
+        seriesName: series.seriesName,
+        seriesFirstIssue: new Date(series.seriesFirstIssue), // Make sure first issue is a Date
+      }));
+    } catch (e: any) {
+      console.error((e as Prisma.PrismaClientKnownRequestError).message);
     }
   }
 
   try {
     // Add character
     const character = await prisma.character.create({
-      data: characterData,
+      data: {
+        name,
+        height,
+        city: {
+          connect: {
+            id: cityId,
+          },
+        },
+        series: {
+          create: refinedSeries, // This only works because we already created each series. This part only creates the relation
+        },
+      },
+      include: {
+        // Need to do these joins
+        series: true,
+        city: true,
+      },
     });
-
-    if (series) {
-      // Connect series entries
-      const seriesList = [];
-      series.forEach(async (series: ISeries) => {
-        try {
-          const newSeries = await prisma.seriesCharacter.upsert({
-            where: {
-              seriesName_seriesFirstIssue_characterKey: {
-                seriesName: series.name,
-                seriesFirstIssue: new Date(series.firstIssue),
-                characterKey: character.id,
-              },
-            },
-            create: {
-              characterKey: character.id,
-              seriesName: series.name,
-              seriesFirstIssue: new Date(series.firstIssue),
-            },
-            update: {
-              characterKey: character.id,
-              seriesName: series.name,
-              seriesFirstIssue: new Date(series.firstIssue),
-            },
-          });
-          seriesList.push(newSeries);
-        } catch (e) {
-          console.warn('Series could not be added.');
-          console.warn(e);
-        }
-      });
-
-      // character = { ...character, series: seriesList };
-    }
 
     return res.status(201).json(character);
   } catch (e: any) {

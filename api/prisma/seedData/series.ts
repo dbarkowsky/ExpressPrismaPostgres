@@ -1,7 +1,7 @@
 export interface ISeries {
   name: string;
   firstIssue: Date;
-  companyName: string;
+  companyName?: string;
 }
 
 const serieses: ISeries[] = [
