@@ -23,3 +23,8 @@ Create two `.env` files. One in the root, another in `/api` for Prisma.
 
 1. Run `npm run dev` to start the API for local development.
    - It should respond with `Server started on port ...`
+
+OR
+
+1. Run `docker-compose up api`.
+   - This will start a Docker container for the API. It will automatically apply the schemas from Prisma to the database.
