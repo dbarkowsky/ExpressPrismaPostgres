@@ -1,17 +1,24 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, Index, OneToMany } from "typeorm";
+import { Character } from "./Character";
+import { Point } from "geojson";
 
 @Entity()
+@Index(['name', 'lat', 'long'], { unique: true })
 export class City {
 
     @PrimaryGeneratedColumn()
     id: number 
 
-    @Column("text")
+    @Column( "text" )
     name: string
 
-    @Column("double")
-    latitude: number
+    @Column( "float8" )
+    lat: number
 
-    @Column("double")
-    longitude: number
+    @Column( "float8" )
+    long: number
+
+    // a city can have many characters
+    @OneToMany(() => Character, (character) => character.city)
+    character: Character[]
 }

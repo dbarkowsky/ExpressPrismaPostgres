@@ -1,4 +1,7 @@
-import { User } from "./entity/User";
+import { Character } from "./entity/Character";
+import { City } from "./entity/Cities";
+import { Company } from "./entity/Company";
+import { Series } from "./entity/Series";
 import {DataSource} from "typeorm";
 
 const AppDataSource = new DataSource({
@@ -10,23 +13,10 @@ const AppDataSource = new DataSource({
     database: "postgres",
     synchronize: true,
     logging: true,
-    entities: [User],
+    entities: ["./entity/*.ts"],
     subscribers: [],
     migrations: [],
 })
 
 export default AppDataSource;
 
-
-// once we have things set up we can use something like this to make connections 
-// sauce:
-// https://orkhan.gitbook.io/typeorm/docs/data-source
-// import { AppDataSource } from "./app-data-source"
-//import { User } from "../entity/User"
-
-//export class UserController {
-//    @Get("/users")
-//    getAll() {
-//        return AppDataSource.manager.find(User)
-//    }
-//}
