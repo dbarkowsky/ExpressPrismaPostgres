@@ -10,7 +10,7 @@ Create two `.env` files. One in the root, another in `/api` for Prisma.
 
 ## 2. Start Database
 
-1. Run `docker-compose up postgres` to start the database.
+1. From the root folder, run `docker-compose up postgres` to start the database.
    - Postgres ENVs must be set before this. See above.
 2. Check Docker Desktop or use `docker ps` to see that Postgres is running properly.
 
@@ -21,10 +21,10 @@ Create two `.env` files. One in the root, another in `/api` for Prisma.
 
 ## 4. Start API
 
-1. Run `npm run dev` to start the API for local development.
+1. In the `/api` folder, run `npm run dev` to start the API for local development.
    - It should respond with `Server started on port ...`
 
 OR
 
-1. Run `docker-compose up api`.
+1. From the root folder, run `docker-compose up api`.
    - This will start a Docker container for the API. It will automatically apply the schemas from Prisma to the database.
