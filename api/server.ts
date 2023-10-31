@@ -1,8 +1,6 @@
 import constants from './constants';
 import app from './express';
-import AppDataSource from './data-source'
-import { User } from "./entity/User"
-import { Company } from './entity/Company';
+import AppDataSource from './data-source';
 
 const { API_PORT } = constants;
 

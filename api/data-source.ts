@@ -1,8 +1,4 @@
-import { Character } from "./entity/Character";
-import { City } from "./entity/Cities";
-import { Company } from "./entity/Company";
-import { Series } from "./entity/Series";
-import {DataSource} from "typeorm";
+import { DataSource } from "typeorm";
 import dotenv from 'dotenv';
 dotenv.config()
 
@@ -15,9 +11,9 @@ const AppDataSource = new DataSource({
     database: "postgres",
     synchronize: true,
     logging: true,
-    entities: ["./entity/*.ts"],
-    subscribers: [],
-    migrations: [],
+    entities: ["./typeorm/entity/*.ts"],
+    migrations: ["./typeorm/migrations/*.ts"],
+    subscribers: []
 })
 
 export default AppDataSource;
