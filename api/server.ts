@@ -10,6 +10,12 @@ const { API_PORT } = constants;
 
 AppDataSource.initialize()
     .then(async () => {
+
+        // const jsonIn = JSON.stringify(seedData);
+        // const jsonParse = JSON.parse(jsonIn);
+        // const companies = jsonParse.companies;
+        // console.log(jsonParse);
+        // console.log(JSON.stringify(companies));
         console.log("Data Source has been initialized!")
 
         //clear out tables

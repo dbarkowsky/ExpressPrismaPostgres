@@ -1,0 +1,25 @@
+{
+    "companies": [
+        { "name": "DC" },
+        { "name": "Marvel" }
+    ],
+    "cities": [
+        { "name": "New York City", "lat": 40.7595968, "long": -73.9776144 },
+        { "name": "Moscow", "lat": 55.727886, "long": 37.671269 },
+        { "name": "Oslo", "lat": 59.911889, "long": 10.745646 },
+        { "name": "New Delhi", "lat": 28.598189, "long": 77.141004 }
+    ],
+    "series": [
+        { "name": "Avengers", "firstIssue": "1991-02-04" },
+        { "name": "Superman", "firstIssue":  "1991-04-04" },
+        { "name": "Justice League", "firstIssue":  "1971-02-04" },
+        { "name": "Wizards Weekly", "firstIssue":  "1991-02-04" }
+    ],
+    "characters": [
+        { "name": "Superman", "height": 191 },
+        { "name": "Hulk", "height": 250 },
+        { "name": "Iron Man", "height": 185 },
+        { "name": "Dr. Strange", "height": 183 },
+        { "name": "Black Widow", "height": 164 }
+    ]
+}
