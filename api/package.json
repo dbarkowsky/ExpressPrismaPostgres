@@ -8,7 +8,8 @@
     "dev": "nodemon --exec ts-node -r dotenv/config server.ts dotenv_config_path=../.env",
     "lint": "eslint ./",
     "build": "tsc",
-    "migration": "npx typeorm-ts-node-commonjs migration:run -d ./data-source.ts"
+    "migration": "npx typeorm-ts-node-commonjs migration:run -d ./data-source.ts",
+    "rollback": "npx typeorm-ts-node-commonjs migration:revert -d ./data-source.ts"
   },
   "author": "",
   "license": "ISC",

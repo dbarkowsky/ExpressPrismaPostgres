@@ -10,9 +10,10 @@ const AppDataSource = new DataSource ({
     password: process.env.POSTGRES_PASSWORD,
     database: process.env.POSTGRES_DB,
     synchronize: true,
+    migrationsRun: false,
     logging: true,
     entities: ["./typeorm/entity/*.ts"],
-    migrations: ["./typeorm/migrations/*.ts"],
+    migrations: ["./typeorm/migrations/seed/*.ts", "./typeorm/migrations/*.ts"],
     subscribers: []
 })
 

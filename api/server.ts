@@ -6,6 +6,8 @@ import { Series } from './typeorm/entity/Series';
 import { City } from './typeorm/entity/Cities';
 import { Character } from './typeorm/entity/Character';
 
+//import seed from "./typeorm/migrations/seed/seed.json"
+
 const { API_PORT } = constants;
 
 AppDataSource.initialize()
@@ -16,31 +18,86 @@ AppDataSource.initialize()
         // const companies = jsonParse.companies;
         // console.log(jsonParse);
         // console.log(JSON.stringify(companies));
-        console.log("Data Source has been initialized!")
+        // console.log("Data Source has been initialized!")
 
-        //clear out tables
-        await AppDataSource
-            .createQueryBuilder()
-            .delete()
-            .from(Character)
-            .execute();
+        // //clear out tables
+        // await AppDataSource
+        //     .createQueryBuilder()
+        //     .delete()
+        //     .from(Character)
+        //     .execute();
 
-        await AppDataSource
-            .createQueryBuilder()
-            .delete()
-            .from(City)
-            .execute();  
-        await AppDataSource
-            .createQueryBuilder()
-            .delete()
-            .from(Series)
-            .execute();
+        // await AppDataSource
+        //     .createQueryBuilder()
+        //     .delete()
+        //     .from(City)
+        //     .execute();  
+        // await AppDataSource
+        //     .createQueryBuilder()
+        //     .delete()
+        //     .from(Series)
+        //     .execute();
 
-        await AppDataSource
-            .createQueryBuilder()
-            .delete()
-            .from(Company)
-            .execute();
+        // await AppDataSource
+        //     .createQueryBuilder()
+        //     .delete()
+        //     .from(Company)
+        //     .execute();
+
+
+            //
+
+            // let jsonData = JSON.stringify(seedData);
+
+            // const companyData = JSON.parse(jsonData).companies;
+            // const cityData = JSON.parse(jsonData).cities;
+            // const seriesData = JSON.parse(jsonData).series;
+            // const characterData = JSON.parse(jsonData).characters;
+
+            // const companyRepo = await AppDataSource.getRepository( Company );
+            // const cityRepo = await AppDataSource.getRepository( City );
+    
+            // await AppDataSource.createQueryBuilder()
+            //     .insert()
+            //     .into( Company )
+            //     .values( companyData )
+            //     .execute();
+    
+            // await AppDataSource.createQueryBuilder()
+            //     .insert()
+            //     .into( City )
+            //     .values( cityData )
+            //     .execute();
+
+            // for( let i =0; i < Object.keys(seriesData).length; i++ ){
+            //     const seriesCompany = await companyRepo.findOneBy({
+            //         "name": seriesData[i]["company"]
+            //     });
+            //     await AppDataSource.createQueryBuilder()
+            //         .insert()
+            //         .into( Series )
+            //         .values({
+            //             name: seriesData[i]["name"],
+            //             firstIssue: seriesData[i]["firstIssue"],
+            //             company: seriesCompany
+            //         })
+            //         .execute();
+            // }
+            
+            // for( let i = 0; i < Object.keys( cityData ).length; i++ ){
+            //     const characterCity = await cityRepo.findOneBy({
+            //         "name": seriesData[i]["series"]
+            //     });
+            //     await AppDataSource.createQueryBuilder()
+            //         .insert()
+            //         .into( Character )
+            //         .values({
+            //             name: characterData[i]["name"],
+            //             height: characterData[i]["height"]
+            //         })
+            //         .execute();
+            // }
+            
 
         // enter new data
         // await AppDataSource
