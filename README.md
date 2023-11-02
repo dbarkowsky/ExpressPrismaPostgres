@@ -24,4 +24,6 @@ Fill out both .env files with necessary information.
 
 1. From api/ folder run:
     ``` npm run migration ```
+2. If you would like to undo the seeding process run:
+    ``` npm run rollback ```
 
