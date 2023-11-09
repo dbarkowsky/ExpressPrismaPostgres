@@ -1,9 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, Index, ManyToMany, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, Index, ManyToMany, ManyToOne, JoinTable } from "typeorm";
 import { Character } from "./Character";
 import { Company } from "./Company";
 
 
 @Entity()
+@Index(['name', 'firstIssue'], { unique: true })
 export class Series {
 
     @PrimaryGeneratedColumn()
@@ -16,10 +17,17 @@ export class Series {
     firstIssue: Date
 
     // a series can have many characters in it
-    @ManyToMany(() => Character, (character) => character.series)
-    character: Character
+    @ManyToMany(() => Character, (character) => character.series, {
+        cascade: true,
+        onDelete: "CASCADE"
+    })
+    // when the entity is the 'owner' of the relationship we add this decorator
+    @JoinTable()
+    characters: Character[]
 
     // a series is owned by one company
-    @ManyToOne(() => Company, (company) => company.series)
+    @ManyToOne(() => Company, (company) => company.series, {
+        cascade: true,
+    })
     company: Company
 }
