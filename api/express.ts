@@ -69,5 +69,6 @@ app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerJSDoc(OPENAPI_OPTIO
 
 // Add router
 app.use('/api', router.healthRouter);
+app.use('/api', router.characterRouter);
 
 export default app;
