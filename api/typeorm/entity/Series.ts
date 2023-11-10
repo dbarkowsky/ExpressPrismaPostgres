@@ -22,6 +22,7 @@ export class Series {
         onDelete: "CASCADE"
     })
     // when the entity is the 'owner' of the relationship we add this decorator
+    // should add more to this decorator 
     @JoinTable()
     characters: Character[]
 
