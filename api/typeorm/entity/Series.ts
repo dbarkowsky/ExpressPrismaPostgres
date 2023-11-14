@@ -25,7 +25,17 @@ export class Series {
     })
     // when the entity is the 'owner' of the relationship we add this decorator
     // should add more to this decorator 
-    @JoinTable()
+    @JoinTable({
+        name: 'series_character',
+        joinColumn: {
+            name: 'series_id',
+            referencedColumnName: 'id',
+        },
+        inverseJoinColumn: {
+            name: 'character_id',
+            referencedColumnName: 'id',
+        },
+    })
     characters: Character[]
 
     // a series is owned by one company

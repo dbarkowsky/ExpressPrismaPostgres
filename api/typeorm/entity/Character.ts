@@ -16,7 +16,11 @@ export class Character {
     height: number
 
     // a character can be in many series
-    @ManyToMany(() => Series, (series) => series.characters)
+    @ManyToMany(
+        () => Series,
+        (series) => series.characters,
+        {onDelete: 'NO ACTION', onUpdate: 'NO ACTION',},
+        )
     series: Series[] 
 
     // a character lives in one city

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { Series } from '../typeorm/entity/Series';
 import { Company } from '../typeorm/entity/Company';
+import { Character } from '../typeorm/entity/Character';
 import AppDataSource from '../data-source';
 import { request } from 'http';
 
@@ -58,13 +59,14 @@ export const updateSeries = async (request: Request, response: Response) => {
 }
 
 export const addSeries = async (request: Request, response: Response) => {
-    const { name, firstIssue, company } = request.body;
+    const { name, firstIssue, characters, company } = request.body;
     // test to see if name or first issue werent provided
     if (!name || !firstIssue) {
         return response.status(400).send('name or first Issue are missing from body, but they are required');
     }
     const seriesRepo = AppDataSource.getRepository(Series);
     const companyRepo = AppDataSource.getRepository(Company);
+    const characterRepo = AppDataSource.getRepository(Character);
 
     // check to see if series already exists
     try {
@@ -113,19 +115,23 @@ export const addSeries = async (request: Request, response: Response) => {
                 name: company
             }
         });
-        const newSeries = await AppDataSource
-          .createQueryBuilder()
-          .insert()
-          .into(Series)
-          .values([
-            {name: name, firstIssue: firstIssue, company: curCompany}
-          ])
-          .execute()
-          return response.status(200).json(newSeries);
+
+        // different way of creating a new row
+        // this works but I cant see the updates on the ralationship anywhere. 
+        const newSeries = new Series();
+        newSeries.name = name; 
+        newSeries.firstIssue = firstIssue;
+        newSeries.company = curCompany;
+        newSeries.characters = characters;
+        const add = await seriesRepo.manager.save(newSeries);
+
+        // if there are no characters to add we stop here
+        return response.status(200).json(add);
     } catch (e: any) { 
         console.error(e);
         return response.status(400).send('Error adding character.');
     }
+
 }
 
 export const deleteSeries = async (request: Request, response: Response) => {
