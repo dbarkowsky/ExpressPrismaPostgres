@@ -6,6 +6,13 @@ import {
   addCharacter,
   deleteCharacter
 } from './characterController';
+import { 
+  getAllSeries,
+  getSeries,
+  updateSeries,
+  addSeries,
+  deleteSeries
+ } from './seriesController';
 
 const characterControllers = {
   getAllCharacters,
@@ -15,7 +22,16 @@ const characterControllers = {
   deleteCharacter
 }
 
+const seriesControllers = {
+  getAllSeries,
+  getSeries,
+  updateSeries,
+  addSeries,
+  deleteSeries
+}
+
 export default {
   healthCheck,
   ...characterControllers,
+  ...seriesControllers,
 };

@@ -17,6 +17,8 @@ export class Series {
     firstIssue: Date
 
     // a series can have many characters in it
+    // may want to look into this https://blog.continium-labs.com/many-to-many-relations-with-typeorm-and-nestjs/
+    // if we want to access the join table directly we can but we have to create an entity for it. 
     @ManyToMany(() => Character, (character) => character.series, {
         cascade: true,
         onDelete: "CASCADE"
