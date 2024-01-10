@@ -19,13 +19,13 @@ export const getAllSeries = async (request: Request, response: Response) => {
 
 export const getSeries = async (request: Request, response: Response) => {
     const inId = request.query.id as unknown; 
-    console.log(inId);
+    //console.log(inId);
     if (!inId) return response.status(400).send('No series Id given.');
     try {
         const seriesRepo = AppDataSource.getRepository(Series);
         const series = await seriesRepo.findOne({
             where: {
-                id: inId as number, 
+                id: inId as number
             }
         })
         return response.status(200).json(series);
