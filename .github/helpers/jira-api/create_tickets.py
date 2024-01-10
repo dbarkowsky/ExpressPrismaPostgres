@@ -79,7 +79,8 @@ def get_env_variables():
         jira_epic = os.environ["JIRA_EPIC"]
         jira_epic = jira_epic.split(", ")
     except KeyError:
-        sys.exit( "Unable to get Epic ID environment variable." )
+        #sys.exit( "Unable to get Epic ID environment variable." )
+        jira_epic = ""
 
     return ( level_flags, dep_in, jira_api_key, project_key, jira_subtask, jira_epic )
 
